@@ -14,10 +14,9 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 ## ToDo
 
-- show keys (and warn to make sure its a test key but never expose it)
 - show bytesize for each
 - show calculation time for each
 - show visual explanation
 - show formula and paper link
-- support other schemes: BGV, TFHE, CKKS
+- support other schemes: TFHE, CKKS
 - support other libraries: OpenFHE, tfhe-rs
