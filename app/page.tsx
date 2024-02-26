@@ -2,6 +2,7 @@
 import Header from "@/components/Header";
 import Input from "@/components/Input";
 import Output from "@/components/Output";
+import Answer from "@/components/Answer";
 import { useState } from "react";
 import SEAL from "node-seal";
 
@@ -20,7 +21,8 @@ export interface ResultData {
     evalResult: string;
     dec: string;
     operation: string;
-    isCorrect: boolean;
+    result: number[];
+    answer: number[];
 }
 
 export default function Home() {
@@ -32,21 +34,19 @@ export default function Home() {
         evalResult: '',
         dec: '',
         operation: 'add',
-        isCorrect: true,
+        result: [],
+        answer: [],
     });
 
     const handleFormSubmit = async (data: InputData) => {
-        console.log('operation', data.operation);
-        console.log('scheme', data.scheme);
-
         const seal = await SEAL();
-
         const schemeType = data.scheme === 'bfv' ? seal.SchemeType.bfv : seal.SchemeType.bgv;
         const securityLevel = seal.SecurityLevel.tc128;
         const polyModulusDegree = 4096;
         const bitSizes = [36, 36, 37];
         const bitSize = 20;
         try {
+            if (data.a.length !== data.b.length) throw Error(`a size ${data.a.length} must be same as b size ${data.b.length}`);
             const encParams = seal.EncryptionParameters(schemeType);
             encParams.setPolyModulusDegree(polyModulusDegree);
             encParams.setCoeffModulus(
@@ -55,47 +55,52 @@ export default function Home() {
             encParams.setPlainModulus(seal.PlainModulus.Batching(polyModulusDegree, bitSize));
             const context = seal.Context(encParams, true, securityLevel);
             const keyGenerator = seal.KeyGenerator(context);
-            console.log('setup completed');
 
             const secretKey = keyGenerator.secretKey();
             const publicKey = keyGenerator.createPublicKey();
-            const evalKey = keyGenerator.createRelinKeys();
-            const galoisKey = keyGenerator.createGaloisKeys();
-
-            console.log('public key', publicKey);
+            const relinKey = keyGenerator.createRelinKeys();
+            // const galoisKey = keyGenerator.createGaloisKeys();
 
             const encoder = seal.BatchEncoder(context);
             const encrypter = seal.Encryptor(context, publicKey);
             const evaluator = seal.Evaluator(context);
             const decrypter = seal.Decryptor(context, secretKey);
 
-            console.log('encrypter', encrypter);
-
             const plainTextA = encoder.encode(Int32Array.from(data.a));
             const plainTextB = encoder.encode(Int32Array.from(data.b));
 
+            // enc
             const cipherTextA = encrypter.encrypt(plainTextA!);
             const cipherTextB = encrypter.encrypt(plainTextB!);
 
-            console.log('cipher text of A', cipherTextA);
-            console.log('cipher text of B', cipherTextB);
-
+            // evaluate
             const evalResult = data.operation === 'add' ? evaluator.add(cipherTextA!, cipherTextB!) : evaluator.multiply(cipherTextA!, cipherTextB!);
+            // relinearize
+            const relinResult = evaluator.relinearize(evalResult!, relinKey);
 
-            const dec = decrypter.decrypt(evalResult!);
+            // dec
+            const dec = decrypter.decrypt(relinResult!);
+            const answer = data.a
+                .map((val, i) =>
+                    data.operation === 'add' ? val + data.b[i]
+                        : val * data.b[i]
+                )
+                .map(val => isNaN(val) ? 0 : val);
+            const _dec = encoder.decode(dec!).slice(0, answer.length);
 
             setResult({
                 sk: secretKey.save(),
                 pk: publicKey.save(),
                 encA: cipherTextA!.save(),
                 encB: cipherTextB!.save(),
-                evalResult: evalResult!.save(),
-                dec: encoder.decode(dec!).toString(),
+                evalResult: relinResult!.save(),
+                dec: _dec.toString(),
                 operation: data.operation,
-                isCorrect: true,
+                result: Array.from(_dec),
+                answer: answer,
             });
         } catch (e) {
-            alert(`error ${e}`);
+            alert(e);
         }
 
     }
@@ -113,6 +118,7 @@ export default function Home() {
             <Output title="Enc(B, pk)" result={result.encB} />
             <Output title={`Enc(A) ${result.operation === 'add' ? '+' : 'x'} Enc(B)`} result={result.evalResult} />
             <Output title={`Dec(Enc(A) ${result.operation === 'add' ? '+' : 'x'} Enc(B), sk)`} result={result.dec} />
+            <Answer title={`A ${result.operation === 'add' ? '+' : 'x'} B`} result={result.result} answer={result.answer} />
         </main>
     );
 }

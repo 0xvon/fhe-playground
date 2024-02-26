@@ -35,7 +35,11 @@ const Input = ({ onSubmit }: Props) => {
                         placeholder="e.g., 1,2,3"
                     />
                 </div>
-                <select id="operation" onChange={(e) => setOperation(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-center w-auto">
+                <select
+                    id="operation"
+                    onChange={(e) => setOperation(e.target.value)}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 text-center w-auto"
+                >
                     <option value="add" selected>+</option>
                     <option value="mul">x</option>
                 </select>
@@ -51,7 +55,11 @@ const Input = ({ onSubmit }: Props) => {
                     />
                 </div>
                 <div className="flex items-center">
-                    <select onChange={(e) => setScheme(e.target.value)} id="operation" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-center w-auto mr-2">
+                    <select
+                        onChange={(e) => setScheme(e.target.value)}
+                        id="scheme"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 text-center w-auto mr-2"
+                    >
                         <option value="bfv" selected>BFV</option>
                         <option value="bgv">BGV</option>
                         <option value="ckks" disabled>CKKS</option>
