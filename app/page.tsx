@@ -92,7 +92,7 @@ export default function Home() {
     }
 
     return (
-        <main className="container mx-auto">
+        <main className="container mx-auto bg-white">
             <Header />
             <Input onSubmit={handleFormSubmit} />
             <Output title="Enc(A)" result={result.encA} />

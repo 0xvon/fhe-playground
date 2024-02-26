@@ -19,7 +19,7 @@ const Input = ({ onSubmit }: Props) => {
 
     return (
         <div className="my-12">
-            <form className="space-y-4" onSubmit={handleSubmit}>
+            <form className="space-y-4 text-black" onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="inputA" className="block mb-2">Input A:</label>
                     <input
