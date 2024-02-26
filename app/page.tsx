@@ -8,28 +8,37 @@ import SEAL from "node-seal";
 export interface InputData {
     a: number[];
     b: number[];
+    operation: string;
+    scheme: string;
 }
 
 export interface ResultData {
+    sk: string;
+    pk: string;
     encA: string;
     encB: string;
-    encAdd: string;
-    encMul: string;
-    add: Int32Array | Uint32Array;
-    mul: Int32Array | Uint32Array;
+    evalResult: string;
+    dec: string;
+    operation: string;
+    isCorrect: boolean;
 }
 
 export default function Home() {
     const [result, setResult] = useState<ResultData>({
+        sk: '',
+        pk: '',
         encA: '',
         encB: '',
-        encAdd: '',
-        encMul: '',
-        add: Int32Array.from([0, 0, 0, 0]),
-        mul: Int32Array.from([0, 0, 0, 0]),
+        evalResult: '',
+        dec: '',
+        operation: 'add',
+        isCorrect: true,
     });
 
     const handleFormSubmit = async (data: InputData) => {
+        console.log('operation', data.operation);
+        console.log('scheme', data.scheme);
+
         const seal = await SEAL();
 
         const schemeType = seal.SchemeType.bfv;
@@ -71,19 +80,19 @@ export default function Home() {
             console.log('cipher text of A', cipherTextA);
             console.log('cipher text of B', cipherTextB);
 
-            const addResult = evaluator.add(cipherTextA!, cipherTextB!);
-            const mulResult = evaluator.multiply(cipherTextA!, cipherTextB!);
+            const evalResult = data.operation === 'add' ? evaluator.add(cipherTextA!, cipherTextB!) : evaluator.multiply(cipherTextA!, cipherTextB!);
 
-            const decAdd = decrypter.decrypt(addResult!);
-            const decMul = decrypter.decrypt(mulResult!);
+            const dec = decrypter.decrypt(evalResult!);
 
             setResult({
+                sk: secretKey.save(),
+                pk: publicKey.save(),
                 encA: cipherTextA!.save(),
                 encB: cipherTextB!.save(),
-                encAdd: addResult!.save(),
-                encMul: mulResult!.save(),
-                add: encoder.decode(decAdd!),
-                mul: encoder.decode(decMul!),
+                evalResult: evalResult!.save(),
+                dec: encoder.decode(dec!).toString(),
+                operation: data.operation,
+                isCorrect: true,
             });
         } catch (e) {
             alert(`error ${e}`);
@@ -94,13 +103,16 @@ export default function Home() {
     return (
         <main className="container mx-auto bg-white">
             <Header />
+            <h1
+                className="text-black text-6xl font-semibold m-auto text-center my-10"
+            >Dec(Enc(A) ♢ Enc(B)) = A ♢ B</h1>
             <Input onSubmit={handleFormSubmit} />
-            <Output title="Enc(A)" result={result.encA} />
-            <Output title="Enc(B)" result={result.encB} />
-            <Output title="Enc(A + B)" result={result.encAdd} />
-            <Output title="Enc(A x B)" result={result.encMul} />
-            <Output title="Dec(Enc(A + B)) = A + B" result={result.add.join(", ")} />
-            <Output title="Dec(Enc(A x B)) = A x B" result={result.mul.join(", ")} />
+            <Output title="Secret Key (sk)" result={result.sk} />
+            <Output title="Public Key (pk)" result={result.pk} />
+            <Output title="Enc(A, pk)" result={result.encA} />
+            <Output title="Enc(B, pk)" result={result.encB} />
+            <Output title={`Enc(A) ${result.operation === 'add' ? '+' : 'x'} Enc(B)`} result={result.evalResult} />
+            <Output title={`Dec(Enc(A) ${result.operation === 'add' ? '+' : 'x'} Enc(B), sk)`} result={result.dec} />
         </main>
     );
 }
