@@ -41,7 +41,7 @@ export default function Home() {
 
         const seal = await SEAL();
 
-        const schemeType = seal.SchemeType.bfv;
+        const schemeType = data.scheme === 'bfv' ? seal.SchemeType.bfv : seal.SchemeType.bgv;
         const securityLevel = seal.SecurityLevel.tc128;
         const polyModulusDegree = 4096;
         const bitSizes = [36, 36, 37];
