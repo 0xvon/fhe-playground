@@ -1,113 +1,106 @@
-import Image from "next/image";
+"use client";
+import Header from "@/components/Header";
+import Input from "@/components/Input";
+import Output from "@/components/Output";
+import { useState } from "react";
+import SEAL from "node-seal";
+
+export interface InputData {
+    a: number[];
+    b: number[];
+}
+
+export interface ResultData {
+    encA: string;
+    encB: string;
+    encAdd: string;
+    encMul: string;
+    add: Int32Array | Uint32Array;
+    mul: Int32Array | Uint32Array;
+}
 
 export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    const [result, setResult] = useState<ResultData>({
+        encA: '',
+        encB: '',
+        encAdd: '',
+        encMul: '',
+        add: Int32Array.from([0, 0, 0, 0]),
+        mul: Int32Array.from([0, 0, 0, 0]),
+    });
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+    const handleFormSubmit = async (data: InputData) => {
+        const seal = await SEAL();
 
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+        const schemeType = seal.SchemeType.bfv;
+        const securityLevel = seal.SecurityLevel.tc128;
+        const polyModulusDegree = 4096;
+        const bitSizes = [36, 36, 37];
+        const bitSize = 20;
+        try {
+            const encParams = seal.EncryptionParameters(schemeType);
+            encParams.setPolyModulusDegree(polyModulusDegree);
+            encParams.setCoeffModulus(
+                seal.CoeffModulus.Create(polyModulusDegree, Int32Array.from(bitSizes))
+            );
+            encParams.setPlainModulus(seal.PlainModulus.Batching(polyModulusDegree, bitSize));
+            const context = seal.Context(encParams, true, securityLevel);
+            const keyGenerator = seal.KeyGenerator(context);
+            console.log('setup completed');
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+            const secretKey = keyGenerator.secretKey();
+            const publicKey = keyGenerator.createPublicKey();
+            const evalKey = keyGenerator.createRelinKeys();
+            const galoisKey = keyGenerator.createGaloisKeys();
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
+            console.log('public key', publicKey);
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+            const encoder = seal.BatchEncoder(context);
+            const encrypter = seal.Encryptor(context, publicKey);
+            const evaluator = seal.Evaluator(context);
+            const decrypter = seal.Decryptor(context, secretKey);
+
+            console.log('encrypter', encrypter);
+
+            const plainTextA = encoder.encode(Int32Array.from(data.a));
+            const plainTextB = encoder.encode(Int32Array.from(data.b));
+
+            const cipherTextA = encrypter.encrypt(plainTextA!);
+            const cipherTextB = encrypter.encrypt(plainTextB!);
+
+            console.log('cipher text of A', cipherTextA);
+            console.log('cipher text of B', cipherTextB);
+
+            const addResult = evaluator.add(cipherTextA!, cipherTextB!);
+            const mulResult = evaluator.multiply(cipherTextA!, cipherTextB!);
+
+            const decAdd = decrypter.decrypt(addResult!);
+            const decMul = decrypter.decrypt(mulResult!);
+
+            setResult({
+                encA: cipherTextA!.save(),
+                encB: cipherTextB!.save(),
+                encAdd: addResult!.save(),
+                encMul: mulResult!.save(),
+                add: encoder.decode(decAdd!),
+                mul: encoder.decode(decMul!),
+            });
+        } catch (e) {
+            alert(`error ${e}`);
+        }
+
+    }
+
+    return (
+        <main className="container mx-auto">
+            <Header />
+            <Input onSubmit={handleFormSubmit} />
+            <Output title="Enc(A)" result={result.encA} />
+            <Output title="Enc(B)" result={result.encB} />
+            <Output title="Enc(A + B)" result={result.encAdd} />
+            <Output title="Enc(A x B)" result={result.encMul} />
+            <Output title="Dec(Enc(A + B)) = A + B" result={result.add.join(", ")} />
+            <Output title="Dec(Enc(A x B)) = A x B" result={result.mul.join(", ")} />
+        </main>
+    );
 }
