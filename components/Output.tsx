@@ -2,7 +2,7 @@ import { getBytes } from "@/backend/utils";
 import { useEffect, useState } from "react";
 import { DialogComponent } from "./Dialog";
 import { FaInfoCircle } from "react-icons/fa";
-import { markdownContent } from "@/backend/markdown";
+// import { markdownContent } from "@/backend/markdown";
 
 interface Props {
     title: string;
@@ -19,9 +19,12 @@ const Output = ({ title, result, infoFileDirectory, infoFilePath }: Props) => {
 
     useEffect(() => {
         setIsLoading(true);
-        markdownContent("spec/" + infoFileDirectory, infoFilePath)
-            .then((_content) => {
-                setContent(_content);
+        fetch(`/api/markdown/${infoFileDirectory}/${infoFilePath}`)
+            // markdownContent("spec/" + infoFileDirectory, infoFilePath)
+            .then((data) => data.json())
+            .then((json) => {
+                console.log(json.htmlContent);
+                setContent(json.htmlContent);
                 setIsLoading(false);
             })
             .catch((e) => {
