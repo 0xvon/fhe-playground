@@ -13,13 +13,21 @@ interface Props {
 
 const Output = ({ title, result, infoFileDirectory, infoFilePath }: Props) => {
     const [popupFlag, setPopupFlag] = useState<boolean>(false);
-    const [content, setContent] = useState("<></>");
+    const [isLoading, setIsLoading] = useState(true);
+    const [content, setContent] = useState("");
     const bytesize = getBytes(result);
 
     useEffect(() => {
-        (async () => {
-            setContent(await markdownContent(infoFileDirectory, infoFilePath));
-        })();
+        setIsLoading(true);
+        markdownContent("spec/" + infoFileDirectory, infoFilePath)
+            .then((_content) => {
+                setContent(_content);
+                setIsLoading(false);
+            })
+            .catch((e) => {
+                alert(e);
+                setIsLoading(false);
+            })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [infoFileDirectory]);
 
@@ -27,7 +35,7 @@ const Output = ({ title, result, infoFileDirectory, infoFilePath }: Props) => {
         <div className="my-4">
             <div className="flex justify-between items-center bg-blue-300 p-2">
                 <h2 className="text-black text-xl font-semibold">{title} ({bytesize.toLocaleString()}B)</h2>
-                <FaInfoCircle onClick={() => setPopupFlag(true)} className="mr-2" size={20} color="black" />
+                <FaInfoCircle onClick={() => setPopupFlag(true)} className="mr-2" size={20} color="black" opacity={isLoading ? "0.2" : "1.0"} />
             </div>
             <div className="h-[220px] overflow-x-hidden overflow-y-scroll bg-blue-100 p-2">
                 <p className="text-black break-words">{result}</p>
