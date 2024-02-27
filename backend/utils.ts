@@ -5,6 +5,12 @@ export const getBytes = (str: string): number => {
     return encoded.length;
 }
 
-// `add` -> `+`
-// `mul` -> `x`
-export const op2symbol = (op: string): string => op === 'add' ? "+" : "x";
+// A ♢ B
+export const calcAnswer = (
+    a: number[], b: number[], operation: string
+): number[] => {
+    return a.map((val, i) =>
+        operation === '+' ? val + b[i]
+            : val * b[i]
+    );
+}

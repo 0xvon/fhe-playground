@@ -1,4 +1,4 @@
-import { InputData } from "@/backend/entity";
+import { DICTIONARY, InputData } from "@/backend/entity";
 import { FormEvent, useState } from "react";
 
 interface Props {
@@ -7,9 +7,9 @@ interface Props {
 
 const Input = ({ onSubmit }: Props) => {
     const [inputA, setInputA] = useState('');
-    const [operation, setOperation] = useState('add');
+    const [operation, setOperation] = useState('+');
     const [inputB, setInputB] = useState('');
-    const [scheme, setScheme] = useState('bfv');
+    const [scheme, setScheme] = useState(DICTIONARY.FHE_SCHEME.BFV);
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -37,12 +37,12 @@ const Input = ({ onSubmit }: Props) => {
                 </div>
                 <select
                     id="operation"
-                    defaultValue="add"
+                    defaultValue={DICTIONARY.OP.ADD}
                     onChange={(e) => setOperation(e.target.value)}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 text-center w-auto"
                 >
-                    <option value="add">+</option>
-                    <option value="mul">x</option>
+                    <option value={DICTIONARY.OP.ADD}>{DICTIONARY.OP.ADD}</option>
+                    <option value={DICTIONARY.OP.MUL}>{DICTIONARY.OP.MUL}</option>
                 </select>
                 <div className="flex align-center items-center">
                     <label htmlFor="inputB" className="block mr-2">B:</label>
@@ -58,19 +58,19 @@ const Input = ({ onSubmit }: Props) => {
                 <div className="flex items-center">
                     <select
                         id="scheme"
-                        defaultValue="bfv"
+                        defaultValue={DICTIONARY.FHE_SCHEME.BFV}
                         onChange={(e) => setScheme(e.target.value)}
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 text-center w-auto mr-2"
                     >
-                        <option value="bfv">BFV</option>
-                        <option value="bgv">BGV</option>
-                        <option value="ckks" disabled>CKKS</option>
+                        <option value={DICTIONARY.FHE_SCHEME.BFV}>{DICTIONARY.FHE_SCHEME.BFV}</option>
+                        <option value={DICTIONARY.FHE_SCHEME.BGV}>{DICTIONARY.FHE_SCHEME.BGV}</option>
+                        <option value={DICTIONARY.FHE_SCHEME.CKKS} disabled>{DICTIONARY.FHE_SCHEME.CKKS}</option>
                     </select>
                     <p>Scheme</p>
                 </div>
 
                 <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full">
-                    CALCULATE
+                    {DICTIONARY.CALC_BUTTON_TITLE}
                 </button>
             </form>
         </div>

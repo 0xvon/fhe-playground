@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { DICTIONARY } from "@/backend/entity";
 
 export const metadata: Metadata = {
-  title: "FHE Playground",
-  description: "You can demo add/mul while encrypting",
+  title: DICTIONARY.WEBSITE_TITLE,
+  description: DICTIONARY.WEBSITE_DESCRIPTION,
 };
 
 export default function RootLayout({

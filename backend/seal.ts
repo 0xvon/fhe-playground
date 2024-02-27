@@ -1,6 +1,7 @@
-import { SEALLibrary } from "node-seal/implementation/seal";
-import { InputData, ResultData } from "./entity";
+import { calcAnswer } from "./utils";
+import { DICTIONARY, InputData, ResultData } from "./entity";
 import SEAL from "node-seal";
+import { SEALLibrary } from "node-seal/implementation/seal";
 import { KeyGenerator } from "node-seal/implementation/key-generator";
 import { SchemeType } from "node-seal/implementation/scheme-type";
 import { EncryptionParameters } from "node-seal/implementation/encryption-parameters";
@@ -61,9 +62,9 @@ export const enc_eval_relin_dec = async (data: InputData): Promise<ResultData> =
 
 const encScheme = (scheme: string, seal: SEALLibrary): SchemeType => {
     switch (scheme) {
-        case 'bfv': return seal.SchemeType.bfv;
-        case 'bgv': return seal.SchemeType.bgv;
-        case 'ckks': return seal.SchemeType.ckks;
+        case DICTIONARY.FHE_SCHEME.BFV: return seal.SchemeType.bfv;
+        case DICTIONARY.FHE_SCHEME.BGV: return seal.SchemeType.bgv;
+        case DICTIONARY.FHE_SCHEME.CKKS: return seal.SchemeType.ckks;
         default: throw Error("This scheme is not supported.");
     }
 }
@@ -99,7 +100,7 @@ const evaluate = (
     a: CipherText, b: CipherText,
     operation: string,
 ): CipherText => {
-    return operation === 'add'
+    return operation === '+'
         ? evaluator.add(a, b)!
         : evaluator.multiply(a, b)!;
 }
@@ -112,15 +113,5 @@ const decrypt = (
         encoder
             .decode(decrypter.decrypt(cipherText)!)
             .slice(0, length)
-    );
-}
-
-// A ♢ B
-const calcAnswer = (
-    a: number[], b: number[], operation: string
-): number[] => {
-    return a.map((val, i) =>
-        operation === 'add' ? val + b[i]
-            : val * b[i]
     );
 }
