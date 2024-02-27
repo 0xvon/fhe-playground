@@ -49,7 +49,7 @@ export const DialogComponent = memo(function Dialog(props: Props) {
                 <div className="relative h-3/4 w-3/4 max-w-3xl overflow-y-scroll">
                     <div
                         id="policy"
-                        className="flex w-full min-h-full flex-col bg-white p-4"
+                        className="flex w-full min-h-full flex-col bg-white text-black p-4"
                         onClick={onClickCard}
                         dangerouslySetInnerHTML={{ __html: props.content }}
                     >
