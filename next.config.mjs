@@ -1,8 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    api: {
-        responseLimit: false,
-    }
+    output: "export",
 };
 
 export default nextConfig;
