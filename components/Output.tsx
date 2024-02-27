@@ -2,7 +2,6 @@ import { getBytes } from "@/backend/utils";
 import { useEffect, useState } from "react";
 import { DialogComponent } from "./Dialog";
 import { FaInfoCircle } from "react-icons/fa";
-// import { markdownContent } from "@/backend/markdown";
 
 interface Props {
     title: string;
