@@ -88,5 +88,5 @@ Using evaluation key $EK = (-(a \cdot SK + e) + SK^2 , a)$, computes $\hat{C}^*$
 
 $$
 \hat{C}^*_1 = [{C}^*_1 + EK_1 \cdot {C}^*_3]_q \\
-\hat{C}^*_2 = [{C}^*_2 + EK_2 \cdot {C}^*_3]_q \\
+\hat{C}^*_2 = [{C}^*_2 + EK_2 \cdot {C}^*_3]_q
 $$

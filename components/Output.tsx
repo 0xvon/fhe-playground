@@ -20,7 +20,7 @@ const Output = ({ title, result, infoFileDirectory, infoFilePath }: Props) => {
         (async () => {
             setContent(await markdownContent(infoFileDirectory, infoFilePath));
         })();
-    }, []);
+    }, [infoFileDirectory]);
 
     return (
         <div className="my-4">
