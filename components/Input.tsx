@@ -1,4 +1,4 @@
-import { InputData } from "@/app/page";
+import { InputData } from "@/backend/entity";
 import { FormEvent, useState } from "react";
 
 interface Props {
