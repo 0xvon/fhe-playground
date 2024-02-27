@@ -14,8 +14,7 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 ## ToDo
 
+- insert example vector button
 - show calculation time for each
-- show visual explanation
-- show formula and paper link
 - support other schemes: TFHE, CKKS
 - support other libraries: OpenFHE, tfhe-rs

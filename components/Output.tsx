@@ -1,6 +1,6 @@
 import { getBytes } from "@/backend/utils";
 import { useEffect, useState } from "react";
-import { Dialog } from "./Dialog";
+import { DialogComponent } from "./Dialog";
 import { FaInfoCircle } from "react-icons/fa";
 import { markdownContent } from "@/backend/markdown";
 
@@ -20,7 +20,7 @@ const Output = ({ title, result, infoFileDirectory, infoFilePath }: Props) => {
         (async () => {
             setContent(await markdownContent(infoFileDirectory, infoFilePath));
         })();
-    }, [infoFileDirectory]);
+    }, [infoFileDirectory, infoFilePath]);
 
     return (
         <div className="my-4">
@@ -31,7 +31,7 @@ const Output = ({ title, result, infoFileDirectory, infoFilePath }: Props) => {
             <div className="h-[220px] overflow-x-hidden overflow-y-scroll bg-blue-100 p-2">
                 <p className="text-black break-words">{result}</p>
             </div>
-            <Dialog viewFlag={popupFlag} setViewFlag={setPopupFlag} content={content} />
+            <DialogComponent viewFlag={popupFlag} setViewFlag={setPopupFlag} content={content} />
         </div>
     );
 };

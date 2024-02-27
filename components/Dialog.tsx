@@ -6,7 +6,7 @@ type Props = {
     setViewFlag: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export const Dialog = memo((props: Props) => {
+export const DialogComponent = memo(function Dialog(props: Props) {
     const { viewFlag, setViewFlag } = props;
     useEffect(() => {
         const registerBackgroundFixed = () => {
