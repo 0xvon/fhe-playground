@@ -25,6 +25,10 @@ export interface ResultData {
     answerArray: number[]; // Answer array
 }
 
+// `add` -> `+`
+// `mul` -> `x`
+const op2symbol = (op: string): string => op === 'add' ? "+" : "x";
+
 export default function Home() {
     const [result, setResult] = useState<ResultData>({
         sk: '',
@@ -108,17 +112,15 @@ export default function Home() {
     return (
         <main className="container mx-auto bg-white">
             <Header />
-            <h1
-                className="text-black text-6xl font-semibold m-auto text-center my-10"
-            >Dec(Enc(A) ♢ Enc(B)) = A ♢ B</h1>
+            <h1 className="text-black text-6xl font-semibold m-auto text-center my-10">Dec(Enc(A) ♢ Enc(B)) = A ♢ B</h1>
             <Input onSubmit={handleFormSubmit} />
             <Output title="Secret Key (sk)" result={result.sk} />
             <Output title="Public Key (pk)" result={result.pk} />
             <Output title="Enc(A, pk)" result={result.encA} />
             <Output title="Enc(B, pk)" result={result.encB} />
-            <Output title={`Enc(A) ${result.operation === 'add' ? '+' : 'x'} Enc(B)`} result={result.evalResult} />
-            <Output title={`Dec(Enc(A) ${result.operation === 'add' ? '+' : 'x'} Enc(B), sk)`} result={result.dec} />
-            <Answer title={`A ${result.operation === 'add' ? '+' : 'x'} B`} result={result.resultArray} answer={result.answerArray} />
+            <Output title={`Enc(A) ${op2symbol(result.operation)} Enc(B)`} result={result.evalResult} />
+            <Output title={`Dec(Enc(A) ${op2symbol(result.operation)} Enc(B), sk)`} result={result.dec} />
+            <Answer title={`A ${op2symbol(result.operation)} B`} result={result.resultArray} answer={result.answerArray} />
         </main>
     );
 }
