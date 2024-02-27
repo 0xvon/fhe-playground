@@ -37,3 +37,10 @@ h2 {
   line-height: 1.75rem/* 28px */;
   font-weight: bolder;
 }
+
+h4 {
+  font-size: 1.1rem;
+  line-height: 1.5rem;
+  font-weight: bold;
+  margin-top: 12px;
+}

@@ -46,13 +46,13 @@ export const Dialog = memo((props: Props) => {
                 }
                 onClick={onClickBackground}
             >
-                <div className="relative h-3/4 w-3/4 max-w-3xl overflowy-scroll">
+                <div className="relative h-3/4 w-3/4 max-w-3xl overflow-y-scroll">
                     <div
                         id="policy"
-                        className="flex h-full w-full flex-col bg-white"
+                        className="flex w-full min-h-full flex-col bg-white p-4"
                         onClick={onClickCard}
+                        dangerouslySetInnerHTML={{ __html: props.content }}
                     >
-                        <div dangerouslySetInnerHTML={{ __html: props.content }} />
                     </div>
                 </div>
             </div>
