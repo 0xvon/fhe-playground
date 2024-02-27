@@ -25,6 +25,7 @@ const Output = ({ title, result, infoFileDirectory, infoFilePath }: Props) => {
                 setIsLoading(false);
             })
             .catch((e) => {
+                console.error(e);
                 alert(e.digest);
                 setIsLoading(false);
             })
