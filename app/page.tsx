@@ -14,15 +14,15 @@ export interface InputData {
 }
 
 export interface ResultData {
-    sk: string;
-    pk: string;
-    encA: string;
-    encB: string;
-    evalResult: string;
-    dec: string;
-    operation: string;
-    result: number[];
-    answer: number[];
+    sk: string; // Secret Key
+    pk: string; // Public Key
+    encA: string; // Enc(B)
+    encB: string; // Enc(B)
+    evalResult: string; // Enc(A) + Enc(B)
+    dec: string; // Dec result
+    operation: string; // add or mul
+    resultArray: number[]; // Dec result array
+    answerArray: number[]; // Answer array
 }
 
 export default function Home() {
@@ -34,8 +34,8 @@ export default function Home() {
         evalResult: '',
         dec: '',
         operation: 'add',
-        result: [],
-        answer: [],
+        resultArray: [],
+        answerArray: [],
     });
 
     const handleFormSubmit = async (data: InputData) => {
@@ -97,8 +97,8 @@ export default function Home() {
                 evalResult: relinResult!.save(),
                 dec: dec.toString(),
                 operation: data.operation,
-                result: Array.from(dec),
-                answer: answer,
+                resultArray: Array.from(dec),
+                answerArray: answer,
             });
         } catch (e) {
             alert(e);
@@ -118,7 +118,7 @@ export default function Home() {
             <Output title="Enc(B, pk)" result={result.encB} />
             <Output title={`Enc(A) ${result.operation === 'add' ? '+' : 'x'} Enc(B)`} result={result.evalResult} />
             <Output title={`Dec(Enc(A) ${result.operation === 'add' ? '+' : 'x'} Enc(B), sk)`} result={result.dec} />
-            <Answer title={`A ${result.operation === 'add' ? '+' : 'x'} B`} result={result.result} answer={result.answer} />
+            <Answer title={`A ${result.operation === 'add' ? '+' : 'x'} B`} result={result.resultArray} answer={result.answerArray} />
         </main>
     );
 }
