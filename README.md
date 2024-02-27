@@ -14,7 +14,6 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 ## ToDo
 
-- show bytesize for each
 - show calculation time for each
 - show visual explanation
 - show formula and paper link
