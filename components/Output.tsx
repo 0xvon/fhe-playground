@@ -20,7 +20,8 @@ const Output = ({ title, result, infoFileDirectory, infoFilePath }: Props) => {
         (async () => {
             setContent(await markdownContent(infoFileDirectory, infoFilePath));
         })();
-    }, [infoFileDirectory, infoFilePath]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [infoFileDirectory]);
 
     return (
         <div className="my-4">
