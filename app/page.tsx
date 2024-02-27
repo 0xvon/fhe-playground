@@ -8,7 +8,7 @@ import Answer from "@/components/Answer";
 // backend
 import { InputData, ResultData, ResultDataConstructor } from "@/backend/entity";
 import { op2symbol } from "@/backend/utils";
-import { enc_eval_relin_dec } from "@/backend/fhe";
+import { enc_eval_relin_dec } from "@/backend/seal";
 
 export default function Home() {
     const [result, setResult] = useState<ResultData>(ResultDataConstructor.default());

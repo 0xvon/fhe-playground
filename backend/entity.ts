@@ -10,7 +10,7 @@ export interface ResultData {
     pk: string; // Public Key
     encA: string; // Enc(B)
     encB: string; // Enc(B)
-    evalResult: string; // Enc(A) + Enc(B)
+    evalResult: string; // Enc(A) ♢ Enc(B)
     dec: string; // Dec result
     operation: string; // add or mul
     resultArray: number[]; // Dec result array
@@ -18,15 +18,15 @@ export interface ResultData {
 }
 
 export class ResultDataConstructor implements ResultData {
-    sk: string; // Secret Key
-    pk: string; // Public Key
-    encA: string; // Enc(B)
-    encB: string; // Enc(B)
-    evalResult: string; // Enc(A) + Enc(B)
-    dec: string; // Dec result
-    operation: string; // add or mul
-    resultArray: number[]; // Dec result array
-    answerArray: number[]; // Answer array
+    sk: string;
+    pk: string;
+    encA: string;
+    encB: string;
+    evalResult: string;
+    dec: string;
+    operation: string;
+    resultArray: number[];
+    answerArray: number[];
 
     constructor(
         sk: string,
