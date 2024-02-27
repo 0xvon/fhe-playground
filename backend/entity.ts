@@ -13,6 +13,7 @@ export interface ResultData {
     evalResult: string; // Enc(A) ♢ Enc(B)
     dec: string; // Dec result
     operation: string; // + or x
+    scheme: string;
     resultArray: number[]; // Dec result array
     answerArray: number[]; // Answer array
 }
@@ -25,6 +26,7 @@ export class ResultDataConstructor implements ResultData {
     evalResult: string;
     dec: string;
     operation: string;
+    scheme: string;
     resultArray: number[];
     answerArray: number[];
 
@@ -36,6 +38,7 @@ export class ResultDataConstructor implements ResultData {
         evalResult: string,
         dec: string,
         operation: string,
+        scheme: string,
         resultArray: number[],
         answerArray: number[],
     ) {
@@ -46,12 +49,13 @@ export class ResultDataConstructor implements ResultData {
         this.evalResult = evalResult;
         this.dec = dec;
         this.operation = operation;
+        this.scheme = scheme;
         this.resultArray = resultArray;
         this.answerArray = answerArray;
     }
 
     static default(): ResultData {
-        return new ResultDataConstructor('', '', '', '', '', '', '', [], []);
+        return new ResultDataConstructor('x', 'x', 'x', 'x', 'x', '0', '+', 'BFV', [0], [0]);
     }
 }
 

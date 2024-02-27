@@ -55,6 +55,7 @@ export const enc_eval_relin_dec = async (data: InputData): Promise<ResultData> =
         evalResult: relinResult.save(),
         dec: dec.toString(),
         operation: data.operation,
+        scheme: data.scheme,
         resultArray: dec,
         answerArray: answer,
     }
