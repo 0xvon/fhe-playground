@@ -78,7 +78,7 @@ To reduce the noise magnitude, we choose a fairly smaller $q'$ than $q$, which a
 
 Note that in the BGV context, $q$ can be at any level $l$, i.e., $q_l$; and $q'$ in this context is simple $q_{l-1}$.
 
-Moreover, the ciphertext moludo $q_l$, $\all ≤ l ≤ L$ are chosen such that they are equivalent modulo $t$. This result in scaling down the noise without affecting the encrypted plaintext message. It is as if we are scaling by 1 from the plaintext perspective.
+Moreover, the ciphertext moludo $q_l$, $\forall ≤ l ≤ L$ are chosen such that they are equivalent modulo $t$. This result in scaling down the noise without affecting the encrypted plaintext message. It is as if we are scaling by 1 from the plaintext perspective.
 
 $ModSwitch$ can be computed as shown below:
 
