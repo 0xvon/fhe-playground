@@ -20,10 +20,8 @@ const Output = ({ title, result, infoFileDirectory, infoFilePath }: Props) => {
     useEffect(() => {
         setIsLoading(true);
         fetch(`/api/markdown/${infoFileDirectory}/${infoFilePath}`)
-            // markdownContent("spec/" + infoFileDirectory, infoFilePath)
             .then((data) => data.json())
             .then((json) => {
-                console.log(json.htmlContent);
                 setContent(json.htmlContent);
                 setIsLoading(false);
             })
