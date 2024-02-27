@@ -39,7 +39,7 @@ const Input = ({ onSubmit }: Props) => {
                     id="operation"
                     defaultValue={DICTIONARY.OP.ADD}
                     onChange={(e) => setOperation(e.target.value)}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 text-center w-auto"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 text-center w-auto"
                 >
                     <option value={DICTIONARY.OP.ADD}>{DICTIONARY.OP.ADD}</option>
                     <option value={DICTIONARY.OP.MUL}>{DICTIONARY.OP.MUL}</option>
@@ -60,7 +60,7 @@ const Input = ({ onSubmit }: Props) => {
                         id="scheme"
                         defaultValue={DICTIONARY.FHE_SCHEME.BFV}
                         onChange={(e) => setScheme(e.target.value)}
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 text-center w-auto mr-2"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 text-center w-auto mr-2"
                     >
                         <option value={DICTIONARY.FHE_SCHEME.BFV}>{DICTIONARY.FHE_SCHEME.BFV}</option>
                         <option value={DICTIONARY.FHE_SCHEME.BGV}>{DICTIONARY.FHE_SCHEME.BGV}</option>
