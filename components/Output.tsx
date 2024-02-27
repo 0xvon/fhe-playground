@@ -25,7 +25,7 @@ const Output = ({ title, result, infoFileDirectory, infoFilePath }: Props) => {
                 setIsLoading(false);
             })
             .catch((e) => {
-                alert(e);
+                alert(e.digest);
                 setIsLoading(false);
             })
         // eslint-disable-next-line react-hooks/exhaustive-deps
