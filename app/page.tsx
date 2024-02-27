@@ -46,47 +46,48 @@ export default function Home() {
         const bitSizes = [36, 36, 37];
         const bitSize = 20;
         try {
-            if (data.a.length !== data.b.length) throw Error(`a size ${data.a.length} must be same as b size ${data.b.length}`);
+            if (data.a.length !== data.b.length) throw Error(`A size ${data.a.length} must be same as B size ${data.b.length}`);
+            // params
             const encParams = seal.EncryptionParameters(schemeType);
             encParams.setPolyModulusDegree(polyModulusDegree);
             encParams.setCoeffModulus(
                 seal.CoeffModulus.Create(polyModulusDegree, Int32Array.from(bitSizes))
             );
             encParams.setPlainModulus(seal.PlainModulus.Batching(polyModulusDegree, bitSize));
+            // context
             const context = seal.Context(encParams, true, securityLevel);
             const keyGenerator = seal.KeyGenerator(context);
-
+            // keys
             const secretKey = keyGenerator.secretKey();
             const publicKey = keyGenerator.createPublicKey();
             const relinKey = keyGenerator.createRelinKeys();
-            // const galoisKey = keyGenerator.createGaloisKeys();
-
+            // instances
             const encoder = seal.BatchEncoder(context);
             const encrypter = seal.Encryptor(context, publicKey);
             const evaluator = seal.Evaluator(context);
             const decrypter = seal.Decryptor(context, secretKey);
-
+            // plaintext
             const plainTextA = encoder.encode(Int32Array.from(data.a));
             const plainTextB = encoder.encode(Int32Array.from(data.b));
-
-            // enc
+            // encrypt
             const cipherTextA = encrypter.encrypt(plainTextA!);
             const cipherTextB = encrypter.encrypt(plainTextB!);
-
             // evaluate
             const evalResult = data.operation === 'add' ? evaluator.add(cipherTextA!, cipherTextB!) : evaluator.multiply(cipherTextA!, cipherTextB!);
             // relinearize
             const relinResult = evaluator.relinearize(evalResult!, relinKey);
-
-            // dec
-            const dec = decrypter.decrypt(relinResult!);
+            // decrypt
+            const dec = encoder
+                .decode(
+                    decrypter.decrypt(relinResult!)!
+                )
+                .slice(0, data.a.length);
+            // answer
             const answer = data.a
                 .map((val, i) =>
                     data.operation === 'add' ? val + data.b[i]
                         : val * data.b[i]
-                )
-                .map(val => isNaN(val) ? 0 : val);
-            const _dec = encoder.decode(dec!).slice(0, answer.length);
+                );
 
             setResult({
                 sk: secretKey.save(),
@@ -94,15 +95,14 @@ export default function Home() {
                 encA: cipherTextA!.save(),
                 encB: cipherTextB!.save(),
                 evalResult: relinResult!.save(),
-                dec: _dec.toString(),
+                dec: dec.toString(),
                 operation: data.operation,
-                result: Array.from(_dec),
+                result: Array.from(dec),
                 answer: answer,
             });
         } catch (e) {
             alert(e);
         }
-
     }
 
     return (
