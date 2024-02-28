@@ -14,7 +14,7 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 ## ToDo
 
-- insert example vector button
-- show calculation time for each
 - support other schemes: TFHE, CKKS
 - support other libraries: OpenFHE, tfhe-rs
+- support security analysis
+- support fhe-ml

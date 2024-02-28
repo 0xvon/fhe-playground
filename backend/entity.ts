@@ -18,6 +18,14 @@ export interface ResultData {
     answerArray: number[]; // Answer array
 }
 
+export interface PerformanceTime {
+    genKeyTime: number;
+    encATime: number;
+    encBTime: number;
+    evalTime: number;
+    decTime: number;
+}
+
 export class ResultDataConstructor implements ResultData {
     sk: string;
     pk: string;
@@ -56,6 +64,32 @@ export class ResultDataConstructor implements ResultData {
 
     static default(): ResultData {
         return new ResultDataConstructor('x', 'x', 'x', 'x', 'x', '0', '+', 'BFV', [0], [0]);
+    }
+}
+
+export class PerformanceTimeConstructor implements PerformanceTime {
+    genKeyTime: number;
+    encATime: number;
+    encBTime: number;
+    evalTime: number;
+    decTime: number;
+
+    constructor(
+        genKeyTime: number,
+        encATime: number,
+        encBTime: number,
+        evalTime: number,
+        decTime: number,
+    ) {
+        this.genKeyTime = genKeyTime;
+        this.encATime = encATime;
+        this.encBTime = encBTime;
+        this.evalTime = evalTime;
+        this.decTime = decTime;
+    }
+
+    static default(): PerformanceTime {
+        return new PerformanceTimeConstructor(0, 0, 0, 0, 0);
     }
 }
 

@@ -1,5 +1,5 @@
 import { calcAnswer } from "./utils";
-import { DICTIONARY, InputData, ResultData } from "./entity";
+import { DICTIONARY, InputData, PerformanceTime, ResultData } from "./entity";
 import SEAL from "node-seal";
 import { SEALLibrary } from "node-seal/implementation/seal";
 import { KeyGenerator } from "node-seal/implementation/key-generator";
@@ -10,7 +10,7 @@ import { Decryptor } from "node-seal/implementation/decryptor";
 import { CipherText } from "node-seal/implementation/cipher-text";
 import { Evaluator } from "node-seal/implementation/evaluator";
 
-export const enc_eval_relin_dec = async (data: InputData): Promise<ResultData> => {
+export const enc_eval_relin_dec = async (data: InputData): Promise<{ resultData: ResultData, performanceTime: PerformanceTime }> => {
     const seal = await SEAL();
     const schemeType = encScheme(data.scheme, seal);
     const securityLevel = seal.SecurityLevel.tc128;
@@ -24,9 +24,11 @@ export const enc_eval_relin_dec = async (data: InputData): Promise<ResultData> =
     const encParams = generateParams(schemeType, polyModulusDegree, bitSizes, bitSize, seal);
     // context
     const context = seal.Context(encParams, true, securityLevel);
+    const startTime = performance.now(); // measuring time from now
     const keyGenerator = seal.KeyGenerator(context);
     // keys
     const { secretKey, publicKey, relinKey } = generateKeys(keyGenerator);
+    const genkeyTime = performance.now(); // measuring genkey time
     // instances
     const encoder = seal.BatchEncoder(context);
     const encrypter = seal.Encryptor(context, publicKey);
@@ -36,18 +38,24 @@ export const enc_eval_relin_dec = async (data: InputData): Promise<ResultData> =
     const plainTextA = encoder.encode(Int32Array.from(data.a))!;
     const plainTextB = encoder.encode(Int32Array.from(data.b))!;
     // encrypt
+    const startTime2 = performance.now(); // measuring time from now
     const cipherTextA = encrypter.encrypt(plainTextA)!;
+    const encATime = performance.now(); // measuring encA time
     const cipherTextB = encrypter.encrypt(plainTextB)!;
+    const encBTime = performance.now();
     // evaluate
     const evalResult = evaluate(evaluator, cipherTextA, cipherTextB, data.operation);
     // relinearize
     const relinResult = evaluator.relinearize(evalResult, relinKey)!;
+    const evalTime = performance.now();
     // decrypt
+    const startTime3 = performance.now();
     const dec = decrypt(encoder, decrypter, relinResult, data.a.length);
+    const decTime = performance.now();
     // answer
     const answer = calcAnswer(data.a, data.b, data.operation);
 
-    return {
+    const resultData: ResultData = {
         sk: secretKey.save(),
         pk: publicKey.save(),
         encA: cipherTextA.save(),
@@ -59,6 +67,15 @@ export const enc_eval_relin_dec = async (data: InputData): Promise<ResultData> =
         resultArray: dec,
         answerArray: answer,
     }
+    const performanceTime: PerformanceTime = {
+        genKeyTime: genkeyTime - startTime,
+        encATime: encATime - startTime2,
+        encBTime: encBTime - encATime,
+        evalTime: evalTime - encBTime,
+        decTime: decTime - startTime3,
+    }
+
+    return { resultData, performanceTime };
 }
 
 const encScheme = (scheme: string, seal: SEALLibrary): SchemeType => {
