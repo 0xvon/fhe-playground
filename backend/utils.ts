@@ -14,3 +14,14 @@ export const calcAnswer = (
             : val * b[i]
     );
 }
+
+export const generateRandomVector = (length: number = 4096): { a: number[], b: number[] } => {
+    const vectorLength = Math.floor(Math.random() * length);
+    const a = [];
+    const b = [];
+    for (let i = 0; i < vectorLength; i++) {
+        a.push(Math.floor(Math.random() * 500) + 1);
+        b.push(Math.floor(Math.random() * 500) + 1);
+    }
+    return { a, b };
+}

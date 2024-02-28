@@ -1,4 +1,5 @@
 import { DICTIONARY, InputData } from "@/backend/entity";
+import { generateRandomVector } from "@/backend/utils";
 import { FormEvent, useState } from "react";
 
 interface Props {
@@ -24,12 +25,19 @@ const Input = ({ onSubmit }: Props) => {
     return (
         <div className="my-12">
             <form className="space-y-4 text-black" onSubmit={handleSubmit}>
+                <button type="button" className="bg-blue-800 text-white px-4 py-2 rounded hover:bg-blue-600 w-auto"
+                    onClick={() => {
+                        const { a, b } = generateRandomVector();
+                        setInputA(a.join(","));
+                        setInputB(b.join(","));
+                    }}>input random vector</button>
                 <div className="flex align-center items-center">
                     <label htmlFor="inputA" className="block mr-2">A:</label>
                     <input
                         id="inputA"
                         type="text"
                         name={inputA}
+                        value={inputA}
                         onChange={(e) => setInputA(e.target.value)}
                         className="border border-gray-300 p-2 w-full"
                         placeholder="e.g., 1,2,3"
@@ -50,6 +58,7 @@ const Input = ({ onSubmit }: Props) => {
                         id="inputB"
                         type="text"
                         name={inputB}
+                        value={inputB}
                         onChange={(e) => setInputB(e.target.value)}
                         className="border border-gray-300 p-2 w-full"
                         placeholder="e.g., 4,5,6"
