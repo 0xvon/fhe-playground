@@ -14,9 +14,9 @@ export const enc_eval_relin_dec = async (data: InputData): Promise<{ resultData:
     const seal = await SEAL();
     const schemeType = encScheme(data.scheme, seal);
     const securityLevel = seal.SecurityLevel.tc128;
-    const polyModulusDegree = 4096;
-    const bitSizes = [36, 36, 37];
-    const bitSize = 20;
+    const polyModulusDegree = 4096; // t: polynomial modulus
+    const bitSizes = [36, 36, 37]; // bit-length of the primes , at most 60 bits
+    const bitSize = 26; // bit-length of the primes to be generated
 
     // check if a.length === b.length
     if (data.a.length !== data.b.length) throw Error(`A size ${data.a.length} must be same as B size ${data.b.length}`);

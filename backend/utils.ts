@@ -20,8 +20,8 @@ export const generateRandomVector = (length: number = 4096): { a: number[], b: n
     const a = [];
     const b = [];
     for (let i = 0; i < vectorLength; i++) {
-        a.push(Math.floor(Math.random() * 500) + 1);
-        b.push(Math.floor(Math.random() * 500) + 1);
+        a.push(Math.floor(Math.random() * 5000) + 1);
+        b.push(Math.floor(Math.random() * 5000) + 1);
     }
     return { a, b };
 }
