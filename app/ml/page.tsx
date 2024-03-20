@@ -6,10 +6,21 @@ import Header from "@/components/Header";
 import { DICTIONARY } from "@/backend/entity";
 import { FaSpinner } from "react-icons/fa";
 import Image from "next/image";
+import SimpleOutput from "@/components/SimpleOutput";
+import SimpleImageOutput from "@/components/SimpleImageOutput";
 
 interface Result {
+    X_q: [number];
+    X_q_img: string;
+    X_q_enc: string;
+    output_q_enc: string;
     output: number;
     ans: number;
+
+    keygen_time: number;
+    enc_time: number;
+    pred_time: number;
+    dec_time: number;
 }
 
 interface Mnist {
@@ -58,6 +69,7 @@ export default function ML() {
                                 fetch(`${endpoint}/predict/?id=${mnist.id}`, { method: "POST" })
                                     .then((data) => data.json())
                                     .then((json) => {
+                                        console.log(json);
                                         setResult(json as Result);
                                         setIsLoading(false);
                                     })
@@ -68,8 +80,11 @@ export default function ML() {
                                     })
                             }
                         }} disabled={isLoading}>{isLoading ? <FaSpinner className="animate-spin" /> : "Run"}</button>
-                    <p>output: {result?.output ?? "X"}</p>
-                    <p>answer: {result?.ans ?? "X"}</p>
+                    <SimpleImageOutput title="Quantized Input" resultImg={result?.X_q_img} />
+                    <SimpleOutput title="Enc(QInput)" result={result?.X_q_enc?.toString() ?? "XXX"} time={result?.enc_time} />
+                    <SimpleOutput title="Enc(QOutput)" result={result?.output_q_enc?.toString() ?? "XXX"} time={result?.pred_time} />
+                    <SimpleOutput title="Output" result={result?.output?.toString() ?? "XXX"} time={result?.dec_time} />
+                    <SimpleOutput title="Answer" result={result?.ans?.toString() ?? "XXX"} />
                 </div>
             </div>
         </main>
