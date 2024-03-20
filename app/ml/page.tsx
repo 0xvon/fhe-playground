@@ -30,12 +30,12 @@ interface Mnist {
     y: number;
 }
 
-const endpoint = "http://127.0.0.1:8000";
+const endpoint = process.env.NEXT_PUBLIC_ML_ENDPOINT ?? "http://127.0.0.1:8000";
 
 export default function ML() {
     const [isLoading, setIsLoading] = useState(false);
     const [result, setResult] = useState<Result | undefined>();
-    const [mnist, setMnist] = useState<Mnist | undefined>()
+    const [mnist, setMnist] = useState<Mnist | undefined>();
 
     return (
         <main className="container mx-auto bg-white">
@@ -54,7 +54,6 @@ export default function ML() {
                                     setIsLoading(false);
                                 })
                                 .catch((e) => {
-                                    console.error(e);
                                     alert(e.digest);
                                     setIsLoading(false);
                                 })
